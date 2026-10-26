@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LIFE OS: Pixel Realms v3.0</title>
+  <style>
+    /* ===== TEMA: DARK / LIGHT ===== */
+    :root[data-theme="dark"] {
+      --bg: #090a10;
+      --panel: rgba(15, 23, 42, 0.92);
+      --border: rgba(255, 255, 255, 0.1);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --input-bg: rgba(255,255,255,0.05);
+    }
+    :root[data-theme="light"] {
+      --bg: #f0f4f8;
+      --panel: rgba(255,255,255,0.95);
+      --border: rgba(0,0,0,0.1);
+      --text: #1e293b;
+      --muted: #64748b;
+      --input-bg: rgba(0,0,0,0.04);
+    }
+
+    /* ===== CORES GLOBAIS ===== */
+    :root {
+      --cyan: #06b6d4;
+      --purple: #8b5cf6;
+      --pink: #ec4899;
+      --emerald: #10b981;
+      --gold: #f59e0b;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Courier New', Courier, monospace, system-ui;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.12) 0, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.12) 0, transparent 50%);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 60px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: var(--panel);
+      border-bottom: 2px solid rgba(139, 92, 246, 0.35);
+      padding: 14px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-logo { font-size: 1.8rem; filter: drop-shadow(0 0 8px var(--cyan)); }
+    .brand h1 { font-size: 1.15rem; letter-spacing: 2px; font-weight: 800; }
+    .brand p  { font-size: 0.68rem; color: var(--muted); letter-spacing: 1px; }
+
+    .header-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+    .stat-pill {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: bold;
+    }
+    .stat-pill span { color: var(--gold); }
+
+    /* XP BAR no header */
+    .xp-bar-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 3px;
+    }
+    .xp-label { font-size: 0.65rem; color: var(--muted); }
+    .xp-bar-bg {
+      width: 140px; height: 8px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px; overflow: hidden;
+    }
+    .xp-bar-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--cyan));
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .icon-btn {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: transform 0.15s;
+    }
+    .icon-btn:hover { transform: scale(1.08); }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 1300px;
+      margin: 24px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 280px 1fr 340px;
+      gap: 20px;
+    }
+    @media (max-width: 1080px) { .container { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 700px)  { .container { grid-template-columns: 1fr; } }
+
+    /* ===== PAINEL BASE ===== */
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+      margin-bottom: 20px;
+      transition: background 0.3s;
+    }
+    .panel h3 {
+      font-size: 0.9rem;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--cyan);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ===== AVATAR ===== */
+    .avatar-preview-box {
+      text-align: center;
+      padding: 16px;
+      background: var(--input-bg);
+      border-radius: 12px;
+      border: 1px dashed var(--border);
+      margin-bottom: 14px;
+    }
+    .pixel-avatar-display {
+      font-size: 3.8rem;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 0 10px rgba(6,182,212,0.45));
+      animation: floatAvatar 3s ease-in-out infinite alternate;
+      display: block;
+    }
+    @keyframes floatAvatar {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-6px); }
+    }
+    #player-name-display { font-size: 0.88rem; display: block; }
+
+    .avatar-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .avatar-option {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .avatar-option:hover, .avatar-option.selected {
+      border-color: var(--cyan);
+      background: rgba(6, 182, 212, 0.18);
+      transform: scale(1.06);
+    }
+
+    /* Nome editável */
+    #name-editor {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    #name-editor input {
+      flex: 1;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+      font-size: 0.8rem;
+      outline: none;
+    }
+    #name-editor input:focus { border-color: var(--cyan); }
+
+    .guild-status {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 10px;
+      background: var(--input-bg);
+      padding: 8px;
+      border-radius: 8px;
+    }
+
+    /* ===== ATRIBUTOS ===== */
+    .attributes-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .attr-box {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      padding: 12px;
+      border-radius: 12px;
+    }
+    .attr-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    .progress-bar-bg {
+      width: 100%; height: 7px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px; overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%; width: 50%;
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    /* ===== MISSÕES ===== */
+    .quest-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .quest-card {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .quest-card.done-card {
+      opacity: 0.5;
+      filter: grayscale(0.5);
+    }
+    .quest-card:hover:not(.done-card) {
+      background: rgba(255,255,255,0.06);
+      transform: translateX(3px);
+    }
+    .quest-info h4 { font-size: 0.88rem; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+    .quest-info p  { font-size: 0.73rem; color: var(--muted); }
+    .quest-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    .reward-tag { font-size: 0.73rem; color: var(--gold); font-weight: bold; }
+
+    .btn-action {
+      background: linear-gradient(135deg, var(--emerald), #059669);
+      color: #000;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.73rem;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .btn-action:hover:not(:disabled) { transform: scale(1.06); }
+    .btn-action:disabled {
+      background: rgba(255,255,255,0.08);
+      color: var(--muted);
+      cursor: not-allowed;
+    }
+
+    .btn-del {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #ef4444;
+      border-radius: 6px;
+      padding: 5px 8px;
+      cursor: pointer;
+      font-size: 0.7rem;
+      transition: background 0.15s;
+    }
+    .btn-del:hover { background: rgba(239, 68, 68, 0.35); }
+
+    /* ===== CRIADOR DE MISSÃO ===== */
+    .quest-creator {
+      background: var(--input-bg);
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .quest-creator h4 { font-size: 0.8rem; color: var(--purple); margin-bottom: 4px; }
+    .quest-creator input, .quest-creator select {
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      font-size: 0.78rem;
+      outline: none;
+    }
+    .quest-creator input:focus, .quest-creator select:focus { border-color: var(--purple); }
+    .quest-creator-row { display: flex; gap: 8px; }
+    .quest-creator-row input { flex: 1; }
+
+    .btn-purple-sm {
+      background: linear-gradient(135deg, var(--purple), var(--cyan));
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.78rem;
+      transition: transform 0.15s;
+    }
+    .btn-purple-sm:hover { transform: scale(1.04); }
+
+    /* ===== DUNGEON ===== */
+    .dungeon-box {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(6, 182, 212, 0.15));
+      border: 1px dashed rgba(139, 92, 246, 0.4);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .dungeon-box p { font-size: 0.8rem; margin: 10px 0; min-height: 42px; }
+    .btn-purple {
+      background: linear-gradient(135deg, var(--purple), var(--cyan));
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: bold;
+      width: 100%;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    .btn-purple:hover:not(:disabled) { transform: scale(1.02); }
+    .btn-purple:disabled { opacity: 0.5; cursor: not-allowed; }
+    #dungeon-cooldown { font-size: 0.7rem; color: var(--muted); margin-top: 6px; }
+
+    /* ===== VILA MULTIPLAYER ===== */
+    .multiplayer-village {
+      background: radial-gradient(circle at center, #111827, #030712);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 20px;
+      min-height: 180px;
+    }
+    .village-grid {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 14px 0;
+    }
+    .villager-item {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 0.72rem;
+      gap: 2px;
+      animation: pulseVillager 2.5s ease-in-out infinite alternate;
+    }
+    @keyframes pulseVillager {
+      from { transform: scale(1); box-shadow: 0 0 4px rgba(6,182,212,0.15); }
+      to   { transform: scale(1.04); box-shadow: 0 0 14px rgba(6,182,212,0.45); }
+    }
+    .villager-icon { font-size: 1.8rem; margin-bottom: 2px; }
+
+    /* ===== LOJA ===== */
+    .shop-list { display: flex; flex-direction: column; gap: 8px; }
+    .shop-item {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      gap: 8px;
+    }
+    .shop-item-name { flex: 1; }
+    .btn-buy {
+      background: linear-gradient(135deg, var(--gold), #d97706);
+      color: #000;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.7rem;
+      white-space: nowrap;
+      transition: transform 0.15s;
+    }
+    .btn-buy:hover:not(:disabled) { transform: scale(1.05); }
+    .btn-buy:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ===== LOG ===== */
+    #activity-log {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.6;
+      max-height: 200px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    #activity-log p { margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    #activity-log p:last-child { border-bottom: none; margin-bottom: 0; }
+
+    /* ===== STREAKS ===== */
+    .streak-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(245,158,11,0.15);
+      border: 1px solid rgba(245,158,11,0.3);
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 0.72rem;
+      color: var(--gold);
+      margin-top: 8px;
+    }
+
+    /* ===== FLOAT GAIN ===== */
+    .float-gain {
+      position: fixed;
+      font-weight: bold;
+      font-size: 1rem;
+      color: var(--gold);
+      pointer-events: none;
+      z-index: 9999;
+      animation: floatUpGain 1.1s ease-out forwards;
+    }
+    @keyframes floatUpGain {
+      0%   { opacity: 1; transform: translateY(0) scale(0.9); }
+      100% { opacity: 0; transform: translateY(-55px) scale(1.2); }
+    }
+
+    /* ===== MODAL LEVEL UP ===== */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      animation: fadeIn 0.3s;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-box {
+      background: var(--panel);
+      border: 2px solid var(--purple);
+      border-radius: 20px;
+      padding: 30px 36px;
+      text-align: center;
+      max-width: 360px;
+      box-shadow: 0 0 40px rgba(139,92,246,0.5);
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn {
+      from { transform: scale(0.6); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    .modal-box h2 { font-size: 1.6rem; color: var(--gold); margin-bottom: 8px; }
+    .modal-box p  { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
+
+    /* ===== CONFETTI ===== */
+    .confetti-piece {
+      position: fixed;
+      width: 8px; height: 8px;
+      z-index: 9999;
+      pointer-events: none;
+      border-radius: 2px;
+    }
+
+    /* ===== DAILY RESET BANNER ===== */
+    .reset-banner {
+      text-align: center;
+      padding: 10px;
+      background: linear-gradient(90deg, rgba(139,92,246,0.25), rgba(6,182,212,0.25));
+      border-bottom: 1px solid rgba(139,92,246,0.3);
+      font-size: 0.78rem;
+      display: none;
+    }
+
+    /* ===== TIMER ===== */
+    #daily-timer {
+      font-size: 0.68rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    /* Scrollbar custom */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+  </style>
+</head>
+<body>
+
+  <div class="reset-banner" id="reset-banner">
+    🌅 Novo dia detectado! Suas missões diárias foram renovadas. Continue a jornada!
+  </div>
+
+  <header>
+    <div class="brand">
+      <div class="brand-logo" aria-hidden="true">🛡️</div>
+      <div>
+        <h1>LIFE OS: PIXEL REALMS</h1>
+        <p>SISTEMA OPERACIONAL DA VIDA REAL v3.0</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="xp-bar-wrap">
+        <span class="xp-label">XP: <span id="xp-display">0</span> / <span id="xp-next">100</span></span>
+        <div class="xp-bar-bg"><div class="xp-bar-fill" id="xp-bar"></div></div>
+      </div>
+      <div class="stat-pill">🪙 <span id="player-gold">150</span></div>
+      <div class="stat-pill">⚔️ Nv.<span id="player-lvl">1</span></div>
+      <div class="stat-pill">🔥 <span id="streak-count">0</span> dias</div>
+      <button class="icon-btn" onclick="toggleTheme()" title="Alternar Tema" aria-label="Alternar tema claro/escuro">🌓</button>
+      <button class="icon-btn" onclick="toggleAudio()" title="Alternar Som" aria-label="Alternar som">
+        <span id="audio-icon">🔊</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container" role="main">
+
+    <!-- ===== COLUNA ESQUERDA ===== -->
+    <section aria-label="Perfil do jogador">
+
+      <div class="panel">
+        <h3>👤 Seu Pixel Avatar</h3>
+        <div class="avatar-preview-box">
+          <span class="pixel-avatar-display" id="current-avatar-icon" role="img" aria-label="Avatar atual">🧔🏻♂️</span>
+          <strong id="player-name-display">Herói Cotidiano</strong>
+          <div class="streak-badge">🔥 <span id="streak-badge-count">0</span> dias em sequência</div>
+        </div>
+
+        <p style="font-size: 0.73rem; color: var(--muted); margin-bottom: 8px;">Escolha seu visual:</p>
+        <div class="avatar-selector-grid" id="avatar-grid"></div>
+
+        <div id="name-editor">
+          <input type="text" id="name-input" placeholder="Seu nome de herói..." maxlength="24" aria-label="Nome do herói">
+          <button class="btn-purple-sm" onclick="saveName()">✓</button>
+        </div>
+
+        <div class="guild-status">
+          Guilda: <strong id="guild-label">#REALM-777</strong>
+          <span style="margin-left:6px; font-size:0.65rem; color: var(--emerald);">● Online</span>
+        </div>
+        <div id="daily-timer">Próximo reset: --:--:--</div>
+      </div>
+
+      <div class="panel">
+        <h3>🎁 Loja de Recompensas</h3>
+        <p style="font-size: 0.73rem; color: var(--muted); margin-bottom: 10px;">Gaste seu ouro com prêmios reais para você mesmo:</p>
+        <div class="shop-list" id="shop-list"></div>
+      </div>
+
+    </section>
+
+    <!-- ===== COLUNA CENTRAL ===== -->
+    <section aria-label="Missões e atributos">
+
+      <div class="panel">
+        <h3>📊 Atributos Vitais</h3>
+        <div class="attributes-grid" id="attributes-grid"></div>
+      </div>
+
+      <div class="dungeon-box" role="region" aria-label="Dungeon Súbita">
+        <h3 style="color:var(--purple); text-transform:uppercase; font-size:0.9rem;">🎲 Dungeon Súbita</h3>
+        <p id="dungeon-text">Clique para invocar um evento aleatório no mundo real e ganhar recompensas extras!</p>
+        <button class="btn-purple" id="dungeon-btn" onclick="triggerDungeon(event)">Explorar Dungeon</button>
+        <div id="dungeon-cooldown"></div>
+      </div>
+
+      <div class="panel">
+        <h3>⚔️ Missões Diárias</h3>
+
+        <!-- Criador de missão personalizada -->
+        <div class="quest-creator">
+          <h4>➕ Criar Missão Personalizada</h4>
+          <input type="text" id="new-quest-title" placeholder="Nome da missão..." maxlength="50" aria-label="Título da nova missão">
+          <input type="text" id="new-quest-desc"  placeholder="Descrição curta..." maxlength="80" aria-label="Descrição da missão">
+          <div class="quest-creator-row">
+            <select id="new-quest-cat" aria-label="Categoria da missão">
+              <option value="vitality">🔋 Vitalidade</option>
+              <option value="wealth">🪙 Finanças</option>
+              <option value="mind">🧠 Sabedoria</option>
+              <option value="social">🤝 Social</option>
+            </select>
+            <input type="number" id="new-quest-gold" placeholder="Ouro (ex: 30)" min="5" max="200" aria-label="Recompensa em ouro">
+          </div>
+          <button class="btn-purple-sm" onclick="addCustomQuest()">Adicionar Missão</button>
+        </div>
+
+        <div class="quest-list" id="quest-list"></div>
+      </div>
+
+    </section>
+
+    <!-- ===== COLUNA DIREITA ===== -->
+    <section aria-label="Vila multiplayer e registro">
+
+      <div class="panel multiplayer-village" role="region" aria-label="Vila da Guilda">
+        <h3 style="color:var(--cyan);">🌐 Vila Compartilhada</h3>
+        <p style="font-size: 0.72rem; color: var(--muted);">Amigos completando missões agora:</p>
+        <div class="village-grid" id="village-grid">
+          <div class="villager-item">
+            <div class="villager-icon">🥷🏽</div>
+            <span>Kaelen (Nv. 3)</span>
+            <span style="color:var(--emerald);">● Meditou</span>
+          </div>
+          <div class="villager-item">
+            <div class="villager-icon">🧙🏼♂️</div>
+            <span>Lyra (Nv. 4)</span>
+            <span style="color:var(--gold);">● Leu Livro</span>
+          </div>
+          <div class="villager-item">
+            <div class="villager-icon">👩‍🎤</div>
+            <span>Vex (Nv. 2)</span>
+            <span style="color:var(--cyan);">● Economizou</span>
+          </div>
+        </div>
+        <div style="font-size:0.7rem; color:var(--cyan);">✨ Cada missão fortalece a energia da vila!</div>
+      </div>
+
+      <div class="panel">
+        <h3>📈 Progresso da Guilda</h3>
+        <div id="guild-progress" style="font-size:0.78rem; color:var(--muted); line-height:1.8;">
+          <div>Missões coletivas hoje: <strong id="guild-quests-done" style="color:var(--emerald);">0</strong> / 12</div>
+          <div>Ouro coletivo: <strong id="guild-gold-total" style="color:var(--gold);">0</strong> 🪙</div>
+          <div style="margin-top:8px; font-size:0.7rem;">Bônus de Guilda desbloqueado ao atingir 12 missões!</div>
+          <div class="progress-bar-bg" style="margin-top:6px; height:10px;">
+            <div class="progress-bar-fill" id="guild-progress-bar" style="width:0%; background: linear-gradient(90deg,var(--purple),var(--cyan));"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>📜 Registro do Herói</h3>
+        <div id="activity-log">
+          <p>Bem-vindo ao Pixel Realms v3.0! Selecione seu avatar, customize seu nome e conclua sua primeira missão. Boa jornada, Herói! ⚔️</p>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script>
+    /* ==========================================
+       CONFIGURAÇÕES E CONSTANTES
+    ========================================== */
+    const AVATARS = [
+      { emoji: '🧔🏻♂️', name: 'Guerreiro Urbano' },
+      { emoji: '🥷🏽',   name: 'Cyber Ninja'      },
+      { emoji: '🤖',     name: 'Andróide Focado'  },
+      { emoji: '🧙🏼♂️', name: 'Mago dos Hábitos' },
+      { emoji: '👩‍🎤',  name: 'Cyber Punk'        },
+      { emoji: '🦊',     name: 'Guardião Selvagem' },
+      { emoji: '🧝🏻‍♀️', name: 'Elfa Disciplinada' },
+      { emoji: '🧟',     name: 'Zumbi Produtivo'  },
+      { emoji: '🐉',     name: 'Dragão do Caos'   },
+    ];
+
+    const ATTRS = [
+      { key: 'vitality', label: '🔋 Vitalidade', color: 'var(--emerald)' },
+      { key: 'wealth',   label: '🪙 Finanças',   color: 'var(--gold)'    },
+      { key: 'mind',     label: '🧠 Sabedoria',  color: 'var(--cyan)'    },
+      { key: 'social',   label: '🤝 Social',     color: 'var(--purple)'  },
+    ];
+
+    const DEFAULT_QUESTS = [
+      { id: 1, category: 'vitality', title: 'Beber 500ml de água & alongar',    desc: 'Desbloqueie energia física imediata.',  xp: 30, gold: 20, done: false, custom: false },
+      { id: 2, category: 'wealth',   title: 'Guardar R$5 ou auditar um gasto',  desc: 'Construa seu futuro financeiro.',       xp: 40, gold: 30, done: false, custom: false },
+      { id: 3, category: 'mind',     title: 'Ler 10 páginas de livro/artigo',   desc: 'Alimente sua sabedoria.',               xp: 35, gold: 25, done: false, custom: false },
+      { id: 4, category: 'social',   title: 'Enviar mensagem de apoio a alguém',desc: 'Fortaleça laços de amizade.',           xp: 30, gold: 20, done: false, custom: false },
+    ];
+
+    const DUNGEON_EVENTS = [
+      { text: '⚔️ Faça 15 agachamentos ou flexões agora!',              gold: 50 },
+      { text: '📜 Organize sua mesa em 90 segundos!',                   gold: 40 },
+      { text: '⚡ Mande um áudio de incentivo a um colega!',            gold: 45 },
+      { text: '🎯 Escreva 3 gratidões do dia num papel!',               gold: 35 },
+      { text: '💧 Beba um copo d\'água agora e respire fundo 10x!',     gold: 30 },
+      { text: '📵 Fique 15 min sem celular e foco em uma tarefa!',      gold: 60 },
+      { text: '🌳 Saia por 5 min, respire ar fresco ou abra a janela!', gold: 35 },
+    ];
+
+    const XP_PER_LEVEL = (lvl) => lvl * 100;
+
+    const SHOP_DEFAULTS = [
+      { id: 1, title: '1 Ep. de Série sem Culpa',     cost: 60,  bought: false },
+      { id: 2, title: 'Lanche Favorito / Café Especial', cost: 120, bought: false },
+      { id: 3, title: '1 Hora de Descanso Absoluto',  cost: 200, bought: false },
+    ];
+
+    /* ==========================================
+       ESTADO
+    ========================================== */
+    const today = new Date().toLocaleDateString('pt-BR');
+
+    let state = JSON.parse(localStorage.getItem('pixel_realms_v3')) || {
+      lvl: 1,
+      xp: 0,
+      gold: 150,
+      avatar: '🧔🏻♂️',
+      name: 'Guerreiro Urbano',
+      theme: 'dark',
+      stats: { vitality: 60, wealth: 45, mind: 70, social: 50 },
+      quests: JSON.parse(JSON.stringify(DEFAULT_QUESTS)),
+      shop: JSON.parse(JSON.stringify(SHOP_DEFAULTS)),
+      lastDay: today,
+      streak: 0,
+      lastCompletedDay: null,
+      guildGold: 0,
+      dungeonUsed: false,
+    };
+
+    let soundOn = true;
+    let audioCtx = null;
+    let nextQuestId = Math.max(...state.quests.map(q => q.id), 4) + 1;
+
+    /* ==========================================
+       DAILY RESET
+    ========================================== */
+    function checkDailyReset() {
+      if (state.lastDay !== today) {
+        // Verifica streak
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yStr = yesterday.toLocaleDateString('pt-BR');
+
+        if (state.lastCompletedDay === yStr) {
+          state.streak += 1;
+        } else {
+          state.streak = 0;
+        }
+
+        // Reseta apenas as missões não-custom; as custom ficam mas resetam 'done'
+        state.quests.forEach(q => { q.done = false; });
+        state.lastDay = today;
+        state.dungeonUsed = false;
+
+        document.getElementById('reset-banner').style.display = 'block';
+        setTimeout(() => {
+          document.getElementById('reset-banner').style.display = 'none';
+        }, 5000);
+
+        saveState();
+      }
+    }
+
+    /* ==========================================
+       PERSISTÊNCIA
+    ========================================== */
+    function saveState() {
+      localStorage.setItem('pixel_realms_v3', JSON.stringify(state));
+    }
+
+    /* ==========================================
+       TEMA
+    ========================================== */
+    function applyTheme() {
+      document.documentElement.setAttribute('data-theme', state.theme);
+    }
+    function toggleTheme() {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      applyTheme();
+      saveState();
+    }
+
+    /* ==========================================
+       ÁUDIO
+    ========================================== */
+    function getAudioCtx() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      return audioCtx;
+    }
+
+    function playRetroSound(type) {
+      if (!soundOn) return;
+      const ctx = getAudioCtx();
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      const t = ctx.currentTime;
+
+      switch (type) {
+        case 'success':
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(440, t);
+          osc.frequency.exponentialRampToValueAtTime(880, t + 0.2);
+          gain.gain.setValueAtTime(0.18, t);
+          gain.gain.linearRampToValueAtTime(0.01, t + 0.22);
+          osc.start(); osc.stop(t + 0.22);
+          break;
+        case 'coin':
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(988, t);
+          osc.frequency.setValueAtTime(1319, t + 0.08);
+          gain.gain.setValueAtTime(0.13, t);
+          gain.gain.linearRampToValueAtTime(0.01, t + 0.28);
+          osc.start(); osc.stop(t + 0.28);
+          break;
+        case 'levelup':
+          osc.type = 'square';
+          [523, 659, 784, 1047].forEach((f, i) => {
+            osc.frequency.setValueAtTime(f, t + i * 0.1);
+          });
+          gain.gain.setValueAtTime(0.15, t);
+          gain.gain.linearRampToValueAtTime(0.01, t + 0.5);
+          osc.start(); osc.stop(t + 0.5);
+          break;
+        case 'buy':
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(660, t);
+          osc.frequency.exponentialRampToValueAtTime(1320, t + 0.15);
+          gain.gain.setValueAtTime(0.12, t);
+          gain.gain.linearRampToValueAtTime(0.01, t + 0.2);
+          osc.start(); osc.stop(t + 0.2);
+          break;
+      }
+    }
+
+    function toggleAudio() {
+      soundOn = !soundOn;
+      document.getElementById('audio-icon').textContent = soundOn ? '🔊' : '🔇';
+    }
+
+    /* ==========================================
+       FLOAT GAIN
+    ========================================== */
+    function showFloatGain(x, y, text) {
+      const el = document.createElement('div');
+      el.className = 'float-gain';
+      el.style.left = `${x}px`;
+      el.style.top  = `${y}px`;
+      el.textContent = text;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1200);
+    }
+
+    /* ==========================================
+       CONFETTI
+    ========================================== */
+    function spawnConfetti() {
+      const colors = ['#f59e0b','#06b6d4','#8b5cf6','#10b981','#ec4899'];
+      for (let i = 0; i < 60; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.left = `${Math.random() * 100}vw`;
+        el.style.top = `-10px`;
+        el.style.background = colors[Math.floor(Math.random() * colors.length)];
+        el.style.transform = `rotate(${Math.random()*360}deg)`;
+        el.style.animation = `confettiFall ${1 + Math.random() * 2}s linear ${Math.random() * 0.5}s forwards`;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 3000);
+      }
+    }
+
+    // Adiciona keyframe confetti dinamicamente
+    (function injectConfettiKeyframes() {
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes confettiFall {
+          to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    })();
+
+    /* ==========================================
+       MODAL LEVEL UP
+    ========================================== */
+    function showLevelUpModal(newLvl) {
+      playRetroSound('levelup');
+      spawnConfetti();
+      const overlay = document.createElement('div');
+      overlay.className = 'modal-overlay';
+      overlay.setAttribute('role', 'dialog');
+      overlay.setAttribute('aria-modal', 'true');
+      overlay.setAttribute('aria-label', 'Level Up');
+      overlay.innerHTML = `
+        <div class="modal-box">
+          <div style="font-size:3rem;">🎉</div>
+          <h2>LEVEL UP!</h2>
+          <p>Você alcançou o <strong style="color:var(--gold);">Nível ${newLvl}</strong>!<br>
+             Sua dedicação está transformando sua vida real.</p>
+          <button class="btn-purple" onclick="this.closest('.modal-overlay').remove()">Continuar Jornada ⚔️</button>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+    }
+
+    /* ==========================================
+       XP & LEVEL
+    ========================================== */
+    function addXP(amount) {
+      state.xp += amount;
+      const needed = XP_PER_LEVEL(state.lvl);
+      if (state.xp >= needed) {
+        state.xp -= needed;
+        state.lvl += 1;
+        setTimeout(() => showLevelUpModal(state.lvl), 400);
+      }
+      updateXPBar();
+    }
+
+    function updateXPBar() {
+      const needed = XP_PER_LEVEL(state.lvl);
+      const pct = Math.min(100, (state.xp / needed) * 100);
+      document.getElementById('xp-bar').style.width = `${pct}%`;
+      document.getElementById('xp-display').textContent = state.xp;
+      document.getElementById('xp-next').textContent = needed;
+    }
+
+    /* ==========================================
+       AVATAR
+    ========================================== */
+    function renderAvatarGrid() {
+      const grid = document.getElementById('avatar-grid');
+      grid.innerHTML = '';
+      AVATARS.forEach(av => {
+        const btn = document.createElement('button');
+        btn.className = 'avatar-option' + (state.avatar === av.emoji ? ' selected' : '');
+        btn.textContent = av.emoji;
+        btn.title = av.name;
+        btn.setAttribute('aria-label', `Selecionar avatar ${av.name}`);
+        btn.addEventListener('click', (e) => selectAvatar(av.emoji, av.name, e));
+        grid.appendChild(btn);
+      });
+    }
+
+    function selectAvatar(emoji, name, e) {
+      state.avatar = emoji;
+      state.name   = name;
+      document.getElementById('current-avatar-icon').textContent = emoji;
+      document.getElementById('player-name-display').textContent = name;
+      document.getElementById('name-input').value = name;
+      document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected'));
+      if (e) e.currentTarget.classList.add('selected');
+      playRetroSound('success');
+      saveState();
+    }
+
+    function saveName() {
+      const val = document.getElementById('name-input').value.trim();
+      if (!val) return;
+      state.name = val;
+      document.getElementById('player-name-display').textContent = val;
+      playRetroSound('success');
+      saveState();
+    }
+
+    /* ==========================================
+       ATRIBUTOS
+    ========================================== */
+    function renderAttributes() {
+      const grid = document.getElementById('attributes-grid');
+      grid.innerHTML = '';
+      ATTRS.forEach(attr => {
+        const val = state.stats[attr.key];
+        grid.innerHTML += `
+          <div class="attr-box">
+            <div class="attr-header">
+              <span>${attr.label}</span>
+              <span id="stat-${attr.key}">${val}%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="bar-${attr.key}"
+                   style="width:${val}%; background:${attr.color};"></div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    /* ==========================================
+       MISSÕES
+    ========================================== */
+    function getCatIcon(cat) {
+      return { vitality: '🔋', wealth: '🪙', mind: '🧠', social: '🤝' }[cat] || '✨';
+    }
+
+    function renderQuests() {
+      const list = document.getElementById('quest-list');
+      list.innerHTML = '';
+      state.quests.forEach(q => {
+        const card = document.createElement('div');
+        card.className = 'quest-card' + (q.done ? ' done-card' : '');
+        card.innerHTML = `
+          <div class="quest-info">
+            <h4>${getCatIcon(q.category)} ${q.title}</h4>
+            <p>${q.desc}</p>
+          </div>
+          <div class="quest-actions">
+            <span class="reward-tag">+${q.gold}🪙 +${q.xp}XP</span>
+            <button class="btn-action" onclick="completeQuest(${q.id}, event)"
+                    ${q.done ? 'disabled aria-label="Missão já concluída"' : `aria-label="Concluir missão ${q.title}"`}>
+              ${q.done ? '✓ Feito' : 'Concluir'}
+            </button>
+            ${q.custom ? `<button class="btn-del" onclick="deleteQuest(${q.id})" aria-label="Excluir missão">✕</button>` : ''}
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function completeQuest(id, event) {
+      const q = state.quests.find(x => x.id === id);
+      if (!q || q.done) return;
+
+      q.done = true;
+      state.gold += q.gold;
+      state.guildGold += q.gold;
+      state.stats[q.category] = Math.min(100, state.stats[q.category] + 10);
+
+      addXP(q.xp);
+      playRetroSound('coin');
+
+      if (event) showFloatGain(event.clientX, event.clientY, `+${q.gold}🪙 +${q.xp}XP!`);
+
+      // Marca streak se ao menos 1 missão foi concluída hoje
+      state.lastCompletedDay = today;
+
+      addLog(`⚔️ Missão: "${q.title}" concluída! (+${q.gold}🪙 +${q.xp}XP)`);
+      saveState();
+      renderUI();
+    }
+
+    function addCustomQuest() {
+      const title = document.getElementById('new-quest-title').value.trim();
+      const desc  = document.getElementById('new-quest-desc').value.trim();
+      const cat   = document.getElementById('new-quest-cat').value;
+      const gold  = parseInt(document.getElementById('new-quest-gold').value) || 20;
+
+      if (!title) { alert('Digite o nome da missão!'); return; }
+
+      state.quests.push({
+        id: nextQuestId++,
+        category: cat,
+        title,
+        desc: desc || 'Missão personalizada.',
+        xp: Math.round(gold * 1.2),
+        gold: Math.max(5, Math.min(200, gold)),
+        done: false,
+        custom: true,
+      });
+
+      document.getElementById('new-quest-title').value = '';
+      document.getElementById('new-quest-desc').value  = '';
+      document.getElementById('new-quest-gold').value  = '';
+
+      playRetroSound('success');
+      addLog(`✨ Nova missão criada: "${title}"`);
+      saveState();
+      renderQuests();
+    }
+
+    function deleteQuest(id) {
+      if (!confirm('Remover esta missão personalizada?')) return;
+      state.quests = state.quests.filter(q => q.id !== id);
+      saveState();
+      renderQuests();
+    }
+
+    /* ==========================================
+       DUNGEON
+    ========================================== */
+    let dungeonCooldownTimer = null;
+
+    function triggerDungeon(event) {
+      if (state.dungeonUsed) return;
+      const ev = DUNGEON_EVENTS[Math.floor(Math.random() * DUNGEON_EVENTS.length)];
+      document.getElementById('dungeon-text').textContent = ev.text;
+
+      state.gold += ev.gold;
+      state.guildGold += ev.gold;
+      state.dungeonUsed = true;
+
+      addXP(20);
+      playRetroSound('success');
+      if (event) showFloatGain(event.clientX, event.clientY, `+${ev.gold}🪙 Dungeon!`);
+
+      addLog(`🎲 Dungeon Súbita concluída! (+${ev.gold}🪙)`);
+      saveState();
+      renderUI();
+      updateDungeonBtn();
+    }
+
+    function updateDungeonBtn() {
+      const btn = document.getElementById('dungeon-btn');
+      const cd  = document.getElementById('dungeon-cooldown');
+      if (state.dungeonUsed) {
+        btn.disabled = true;
+        cd.textContent = '✅ Dungeon usada hoje! Volte amanhã.';
+      } else {
+        btn.disabled = false;
+        cd.textContent = '';
+      }
+    }
+
+    /* ==========================================
+       LOJA
+    ========================================== */
+    function renderShop() {
+      const list = document.getElementById('shop-list');
+      list.innerHTML = '';
+      state.shop.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'shop-item';
+        div.innerHTML = `
+          <span class="shop-item-name">${item.title}</span>
+          <button class="btn-buy"
+                  onclick="buyItem(${item.id})"
+                  ${state.gold < item.cost || item.bought ? 'disabled' : ''}
+                  aria-label="${item.bought ? 'Já resgatado' : `Resgatar ${item.title} por ${item.cost} ouro`}">
+            ${item.cost}🪙 ${item.bought ? '✓' : 'Resgatar'}
+          </button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function buyItem(id) {
+      const item = state.shop.find(x => x.id === id);
+      if (!item || item.bought || state.gold < item.cost) return;
+      state.gold -= item.cost;
+      item.bought = true;
+      playRetroSound('buy');
+      addLog(`🎁 Recompensa resgatada: "${item.title}" (-${item.cost}🪙)`);
+      showFloatGain(window.innerWidth / 2, window.innerHeight / 2, `🎁 Resgatado!`);
+      saveState();
+      renderUI();
+    }
+
+    /* ==========================================
+       LOG
+    ========================================== */
+    function addLog(msg) {
+      const log = document.getElementById('activity-log');
+      const p = document.createElement('p');
+      const time = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      p.textContent = `[${time}] ${msg}`;
+      log.insertBefore(p, log.firstChild);
+      // Limita a 20 entradas
+      while (log.children.length > 20) log.removeChild(log.lastChild);
+    }
+
+    /* ==========================================
+       PROGRESSO DA GUILDA
+    ========================================== */
+    function updateGuildProgress() {
+      const done = state.quests.filter(q => q.done).length;
+      const max  = 12;
+      const pct  = Math.min(100, (done / max) * 100);
+      document.getElementById('guild-quests-done').textContent = done;
+      document.getElementById('guild-gold-total').textContent  = state.guildGold;
+      document.getElementById('guild-progress-bar').style.width = `${pct}%`;
+    }
+
+    /* ==========================================
+       TIMER ATÉ MEIA-NOITE
+    ========================================== */
+    function updateDailyTimer() {
+      const now  = new Date();
+      const midnight = new Date(now);
+      midnight.setHours(24, 0, 0, 0);
+      const diff = midnight - now;
+      const h = String(Math.floor(diff / 3_600_000)).padStart(2,'0');
+      const m = String(Math.floor((diff % 3_600_000) / 60_000)).padStart(2,'0');
+      const s = String(Math.floor((diff % 60_000) / 1000)).padStart(2,'0');
+      document.getElementById('daily-timer').textContent = `Próximo reset: ${h}:${m}:${s}`;
+    }
+
+    /* ==========================================
+       RENDER PRINCIPAL
+    ========================================== */
+    function renderUI() {
+      document.getElementById('player-gold').textContent = state.gold;
+      document.getElementById('player-lvl').textContent  = state.lvl;
+      document.getElementById('streak-count').textContent = state.streak;
+      document.getElementById('streak-badge-count').textContent = state.streak;
+      document.getElementById('current-avatar-icon').textContent = state.avatar;
+      document.getElementById('player-name-display').textContent = state.name;
+
+      renderAttributes();
+      renderQuests();
+      renderShop();
+      updateXPBar();
+      updateGuildProgress();
+      updateDungeonBtn();
+    }
+
+    /* ==========================================
+       INIT
+    ========================================== */
+    applyTheme();
+    checkDailyReset();
+    renderAvatarGrid();
+    renderUI();
+    document.getElementById('name-input').value = state.name;
+
+    // Timer a cada segundo
+    setInterval(updateDailyTimer, 1000);
+    updateDailyTimer();
+  </script>
+</body>
+</html>
